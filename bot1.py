@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 from io import BytesIO
 
-BOT_TOKEN = "7966472278:AAFvR5DtdkAiPJbH34S-rUPsJ484Yb6w3zI"
+BOT_TOKEN = "import os
+BOT_TOKEN = os.environ.get("BOT_TOKEN")"
 
 admin_paths = ["admin","admin/login","wp-admin","administrator","cpanel","panel","dashboard"]
 user_urls = {}
