@@ -1,7 +1,6 @@
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
-from flask import Flask, request
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
@@ -97,23 +96,18 @@ IP: {data.get('query')}
 
     await send_txt(query.message.chat_id, context, result)
 
-app = Flask(__name__)
-application = ApplicationBuilder().token(BOT_TOKEN).build()
+def main():
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-application.add_handler(CommandHandler("start", start))
-application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
-application.add_handler(CallbackQueryHandler(buttons))
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
+    app.add_handler(CallbackQueryHandler(buttons))
 
-@app.route(f"/{BOT_TOKEN}", methods=["POST"])
-async def webhook():
-    update = Update.de_json(request.get_json(force=True), application.bot)
-    await application.process_update(update)
-    return "ok"
-
-@app.route("/")
-def index():
-    return "Bot is running"
+    app.run_webhook(
+        listen="0.0.0.0",
+        port=10000,
+        webhook_url=f"https://webreconbot.onrender.com/{BOT_TOKEN}"
+    )
 
 if __name__ == "__main__":
-    application.bot.set_webhook(url=f"https://webreconbot.onrender.com/{BOT_TOKEN}")
-    app.run(host="0.0.0.0", port=10000)
+    main()
