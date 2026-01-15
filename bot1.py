@@ -99,16 +99,12 @@ IP: {data.get('query')}
 def main():
     application = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
-    application.add_handler(CallbackQueryHandler(buttons))
-
     application.run_webhook(
-        listen="0.0.0.0",
-        port=10000,
-        url_path=BOT_TOKEN,
-        webhook_url=f"https://webreconbot.onrender.com/{BOT_TOKEN}"
-    )
-
-if __name__ == "__main__":
+    listen="0.0.0.0",
+    port=10000,
+    url_path=BOT_TOKEN,
+    webhook_url=f"https://webreconbot.onrender.com/{BOT_TOKEN}",
+    health_check_path="/"
+)
+    if __name__ == "__main__":
     main()
